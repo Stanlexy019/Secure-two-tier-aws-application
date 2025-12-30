@@ -1,5 +1,5 @@
 resource "aws_lb" "app_alb" {
-  name               = "${var.terraform_vpc}-alb"
+  name               = "stanley-vpc-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
@@ -10,6 +10,6 @@ resource "aws_lb" "app_alb" {
   ]
 
   tags = {
-    Name = "${var.terraform_vpc}-alb"
+    Name = "stanley-vpc-alb"
   }
 }
