@@ -5,7 +5,7 @@ variable "region" {
 }
 
 variable "terraform_vpc" {
-  default = "stanley_vpc"
+  default = "stanlexy-vpc"
 }
 
 variable "vpc_cidr" {
