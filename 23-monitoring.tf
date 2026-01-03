@@ -1,7 +1,8 @@
 # CloudWatch Log Group for ALB access logs
 resource "aws_cloudwatch_log_group" "alb_logs" {
   name              = "/aws/alb/${var.terraform_vpc}"
-  retention_in_days = 14
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.db_secret_key.arn
 
   tags = {
     Name        = "${var.terraform_vpc}-alb-logs"
@@ -12,7 +13,8 @@ resource "aws_cloudwatch_log_group" "alb_logs" {
 # CloudWatch Log Group for application logs
 resource "aws_cloudwatch_log_group" "app_logs" {
   name              = "/aws/ec2/${var.terraform_vpc}"
-  retention_in_days = 7
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.db_secret_key.arn
 
   tags = {
     Name        = "${var.terraform_vpc}-app-logs"
@@ -93,7 +95,8 @@ resource "aws_cloudwatch_metric_alarm" "alb_unhealthy_hosts" {
 
 # SNS Topic for alerts
 resource "aws_sns_topic" "alerts" {
-  name = "${var.terraform_vpc}-alerts"
+  name              = "${var.terraform_vpc}-alerts"
+  kms_master_key_id = aws_kms_key.db_secret_key.arn
 
   tags = {
     Name        = "${var.terraform_vpc}-alerts"
@@ -116,7 +119,8 @@ resource "aws_flow_log" "vpc_flow_log" {
 
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   name              = "/aws/vpc/${var.terraform_vpc}/flowlogs"
-  retention_in_days = 14
+  retention_in_days = 365
+  kms_key_id        = aws_kms_key.db_secret_key.arn
 
   tags = {
     Name        = "${var.terraform_vpc}-vpc-flow-logs"
@@ -161,8 +165,11 @@ resource "aws_iam_role_policy" "vpc_flow_log_policy" {
           "logs:DescribeLogGroups",
           "logs:DescribeLogStreams"
         ]
-        Effect   = "Allow"
-        Resource = "*"
+        Effect = "Allow"
+        Resource = [
+          aws_cloudwatch_log_group.vpc_flow_logs.arn,
+          "${aws_cloudwatch_log_group.vpc_flow_logs.arn}:*"
+        ]
       }
     ]
   })

@@ -4,18 +4,14 @@ resource "aws_security_group" "db_sg" {
   vpc_id      = aws_vpc.terraform_vpc.id
 
   ingress {
+    description     = "MySQL access from application servers only"
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
     security_groups = [aws_security_group.app_sg.id]
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # No egress rules needed for RDS (AWS managed service)
 
   tags = {
     Name = "${var.terraform_vpc}-db-sg"

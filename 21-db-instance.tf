@@ -17,7 +17,7 @@ resource "aws_db_instance" "app_db" {
   vpc_security_group_ids = [aws_security_group.db_sg.id]
 
   publicly_accessible = false
-  multi_az            = var.enable_rds_multi_az
+  multi_az            = true  # Force Multi-AZ for production security
 
   # Backup configuration
   backup_retention_period = 7
@@ -36,13 +36,32 @@ resource "aws_db_instance" "app_db" {
   monitoring_interval = 60
   monitoring_role_arn = aws_iam_role.rds_monitoring_role.arn
 
-  # Performance insights
-  performance_insights_enabled = true
+  # Performance insights with KMS encryption
+  performance_insights_enabled          = true
   performance_insights_retention_period = 7
+  performance_insights_kms_key_id       = aws_kms_key.db_secret_key.arn
+
+  # Copy tags to snapshots
+  copy_tags_to_snapshot = true
+
+  # Deletion protection for production
+  deletion_protection = true
+
+  # Enable IAM database authentication
+  iam_database_authentication_enabled = true
+
+  # Enable automated minor version upgrades
+  auto_minor_version_upgrade = true
+
+  # Enable RDS logs (MySQL specific log types)
+  enabled_cloudwatch_logs_exports = ["error", "general", "slowquery"]
+
+  # Note: multi_az is already set above via variable
 
   tags = {
     Name        = "${var.terraform_vpc}-db"
     Environment = "production"
     Backup      = "enabled"
+    Encrypted   = "true"
   }
 }
