@@ -9,7 +9,21 @@ resource "aws_lb" "app_alb" {
     aws_subnet.public_subnet_2.id
   ]
 
+  # Enable access logging
+  access_logs {
+    bucket  = aws_s3_bucket.alb_logs.bucket
+    prefix  = "alb-logs"
+    enabled = true
+  }
+
+  # Enable deletion protection for production
+  enable_deletion_protection = true
+
+  # Drop invalid headers
+  drop_invalid_header_fields = true
+
   tags = {
-    Name = "stanley-vpc-alb"
+    Name        = "stanley-vpc-alb"
+    Environment = "production"
   }
 }

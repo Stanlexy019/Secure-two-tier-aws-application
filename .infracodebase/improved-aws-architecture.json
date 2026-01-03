@@ -1,0 +1,227 @@
+{
+  "nodes": [
+    {
+      "id": "vpc",
+      "label": "Virtual Private Cloud",
+      "subtitle": "stanlexy-vpc (10.0.0.0/16)",
+      "icon": "/icons/aws/compute/vmware-cloud-on-aws.png",
+      "type": "container"
+    },
+    {
+      "id": "igw",
+      "label": "Internet Gateway",
+      "subtitle": "terraform-igw",
+      "icon": "/icons/aws/general/internet-gateway.png",
+      "position": {
+        "relativeTo": "vpc",
+        "side": "above"
+      }
+    },
+    {
+      "id": "public_subnet_1",
+      "label": "Public Subnet",
+      "subtitle": "10.0.1.0/24 (eu-north-1a)",
+      "icon": "/icons/aws/network/route-table.png",
+      "type": "container",
+      "parentNode": "vpc"
+    },
+    {
+      "id": "public_subnet_2",
+      "label": "Public Subnet",
+      "subtitle": "10.0.2.0/24 (eu-north-1b)",
+      "icon": "/icons/aws/network/route-table.png",
+      "type": "container",
+      "parentNode": "vpc"
+    },
+    {
+      "id": "private_subnet_1",
+      "label": "Private Subnet",
+      "subtitle": "10.0.3.0/24 (eu-north-1a)",
+      "icon": "/icons/aws/network/route-table.png",
+      "type": "container",
+      "parentNode": "vpc"
+    },
+    {
+      "id": "private_subnet_2",
+      "label": "Private Subnet",
+      "subtitle": "10.0.4.0/24 (eu-north-1b)",
+      "icon": "/icons/aws/network/route-table.png",
+      "type": "container",
+      "parentNode": "vpc"
+    },
+    {
+      "id": "alb",
+      "label": "Application Load Balancer",
+      "subtitle": "stanley-vpc-alb",
+      "icon": "/icons/aws/network/elastic-load-balancing.png",
+      "parentNode": "public_subnet_1"
+    },
+    {
+      "id": "nat",
+      "label": "NAT Gateway",
+      "subtitle": "terraform-nat-gateway",
+      "icon": "/icons/aws/network/nat-gateway.png",
+      "parentNode": "public_subnet_1"
+    },
+    {
+      "id": "asg",
+      "label": "Auto Scaling Group",
+      "subtitle": "app-asg",
+      "icon": "/icons/aws/management/auto-scaling.png",
+      "parentNode": "private_subnet_1"
+    },
+    {
+      "id": "ec2_1",
+      "label": "EC2 Instance",
+      "subtitle": "Web Server",
+      "icon": "/icons/aws/compute/ec2.png",
+      "parentNode": "private_subnet_1"
+    },
+    {
+      "id": "ec2_2",
+      "label": "EC2 Instance",
+      "subtitle": "Web Server",
+      "icon": "/icons/aws/compute/ec2.png",
+      "parentNode": "private_subnet_2"
+    },
+    {
+      "id": "rds",
+      "label": "RDS MySQL",
+      "subtitle": "stanlexy-vpc-db",
+      "icon": "/icons/aws/database/rds.png",
+      "parentNode": "private_subnet_2"
+    },
+    {
+      "id": "secrets",
+      "label": "Secrets Manager",
+      "subtitle": "Database Credentials",
+      "icon": "/icons/aws/security/secrets-manager.png",
+      "position": {
+        "relativeTo": "vpc",
+        "side": "right"
+      }
+    },
+    {
+      "id": "kms",
+      "label": "KMS",
+      "subtitle": "Encryption Keys",
+      "icon": "/icons/aws/security/key-management-service.png",
+      "position": {
+        "relativeTo": "secrets",
+        "side": "above"
+      }
+    },
+    {
+      "id": "cloudwatch",
+      "label": "CloudWatch",
+      "subtitle": "Monitoring & Logs",
+      "icon": "/icons/aws/management/cloudwatch.png",
+      "position": {
+        "relativeTo": "secrets",
+        "side": "below"
+      }
+    },
+    {
+      "id": "flow_logs",
+      "label": "VPC Flow Logs",
+      "subtitle": "Network Monitoring",
+      "icon": "/icons/aws/network/vpc-flow-logs.png",
+      "position": {
+        "relativeTo": "cloudwatch",
+        "side": "below"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "internet_to_igw",
+      "source": "igw",
+      "target": "public_subnet_1",
+      "label": "routes to"
+    },
+    {
+      "id": "igw_to_public2",
+      "source": "igw",
+      "target": "public_subnet_2",
+      "label": "routes to"
+    },
+    {
+      "id": "alb_to_asg",
+      "source": "alb",
+      "target": "asg",
+      "label": "distributes traffic"
+    },
+    {
+      "id": "asg_to_ec2_1",
+      "source": "asg",
+      "target": "ec2_1",
+      "label": "manages"
+    },
+    {
+      "id": "asg_to_ec2_2",
+      "source": "asg",
+      "target": "ec2_2",
+      "label": "manages"
+    },
+    {
+      "id": "nat_to_private1",
+      "source": "nat",
+      "target": "private_subnet_1",
+      "label": "provides internet"
+    },
+    {
+      "id": "nat_to_private2",
+      "source": "nat",
+      "target": "private_subnet_2",
+      "label": "provides internet"
+    },
+    {
+      "id": "ec2_to_rds",
+      "source": "ec2_1",
+      "target": "rds",
+      "label": "connects to"
+    },
+    {
+      "id": "ec2_2_to_rds",
+      "source": "ec2_2",
+      "target": "rds",
+      "label": "connects to"
+    },
+    {
+      "id": "rds_to_secrets",
+      "source": "rds",
+      "target": "secrets",
+      "label": "uses credentials from"
+    },
+    {
+      "id": "secrets_to_kms",
+      "source": "secrets",
+      "target": "kms",
+      "label": "encrypted by"
+    },
+    {
+      "id": "rds_to_kms",
+      "source": "rds",
+      "target": "kms",
+      "label": "encrypted by"
+    },
+    {
+      "id": "vpc_to_cloudwatch",
+      "source": "vpc",
+      "target": "cloudwatch",
+      "label": "monitored by"
+    },
+    {
+      "id": "vpc_to_flow_logs",
+      "source": "vpc",
+      "target": "flow_logs",
+      "label": "logs traffic to"
+    },
+    {
+      "id": "alb_to_cloudwatch",
+      "source": "alb",
+      "target": "cloudwatch",
+      "label": "sends metrics"
+    }
+  ]
+}

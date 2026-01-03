@@ -1,5 +1,58 @@
-# Terraform state
+# Terraform state files
 terraform.tfstate
 terraform.tfstate.*
 .terraform/
 .terraform.*
+
+# Terraform variable files containing sensitive data
+*.tfvars
+*.tfvars.json
+terraform.tfvars.d/
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfplan files
+*.tfplan
+
+# Ignore override files as they are usually used to override resources locally
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Include override files you do wish to add to version control using negated pattern
+# !example_override.tf
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Backup files
+*.backup
+*.bak
+
+# AWS CLI credentials (if accidentally placed in project)
+.aws/
