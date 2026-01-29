@@ -9,43 +9,47 @@ resource "aws_launch_template" "app_lt" {
 
   user_data = base64encode(<<-EOF
     #!/bin/bash
-    apt-get update -y
-    apt-get install -y curl unzip
-    snap install aws-cli --classic
+    sudo apt-get update -y
+    sudo snap install aws-cli --classic
+    sudo apt-get install -y curl unzip awscli
+
+    # Install and configure services
+    sudo apt-get install -y nginx docker.io
+    sudo systemctl start nginx
+    sudo systemctl enable nginx
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    # Install Docker Compose
+    curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+
+    # Create default web page
+    echo "Hello from Auto Scaling EC2" > /var/www/html/index.html
+
+    # create app config directory
+    mkdir -p /opt/stan
+
+    # Retrieve secrets from AWS Systems Manager Parameter Store
+    JWT_SECRET=$(aws ssm get-parameter \
+      --name "/app/prod/jwt_secret" \
+      --with-decryption \
+      --query "Parameter.Value" \
+      --output text \
+      --region eu-north-1)
+
+    MONGO_URI=$(aws ssm get-parameter \
+      --name "/app/prod/mongo_uri" \
+      --with-decryption \
+      --query "Parameter.Value" \
+      --output text \
+      --region eu-north-1)
 
 
-# Retrieve secrets from AWS Systems Manager Parameter Store
-JWT_SECRET=$(aws ssm get-parameter \
-  --name "/app/prod/jwt_secret" \
-  --with-decryption \
-  --query "Parameter.Value" \
-  --output text \
-  --region eu-north-1)
-
-MONGO_URI=$(aws ssm get-parameter \
-  --name "/app/prod/mongo_uri" \
-  --with-decryption \
-  --query "Parameter.Value" \
-  --output text \
-  --region eu-north-1)
-
-# Export as environment variables
-export JWT_SECRET=$JWT_SECRET
-export MONGO_URI=$MONGO_URI
-
-# Install and configure services
-apt-get install -y nginx docker.io
-systemctl start nginx
-systemctl enable nginx
-systemctl start docker
-systemctl enable docker
-
-# Install Docker Compose
-curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-
-# Create default web page
-echo "Hello from Auto Scaling EC2" > /var/www/html/index.html
+    
+    cat > /opt/stan/.env <<ENVEOF
+    JWT_SECRET=$JWT_SECRET
+    MONGO_URI=$MONGO_URI
+    ENVEOF
   EOF
   )
 
