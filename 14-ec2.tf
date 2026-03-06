@@ -12,10 +12,6 @@ resource "aws_instance" "app_server" {
               #!/bin/bash
               apt-get update -y
               apt-get upgrade -y
-              apt-get install -y nginx
-              systemctl start nginx
-              systemctl enable nginx
-              echo "Hello from private EC2" > /var/www/html/index.html
               EOF
 
   tags = {

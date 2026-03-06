@@ -49,3 +49,9 @@ resource "aws_iam_role_policy_attachment" "attach_ssm_read_policy" {
   policy_arn = aws_iam_policy.ssm_read_app_secrets.arn
 }
 
+
+resource "aws_iam_role_policy_attachment" "ec2_ecr_access" {
+  role       = aws_iam_role.ec2_ssm_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
