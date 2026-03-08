@@ -4,7 +4,7 @@
 A Terraform-based implementation of a highly available, secure two-tier architecture on AWS.  
 This project demonstrates real-world infrastructure as code (IaC) practices and can serve as a portfolio piece for cloud, DevOps, and security roles.
 
-## 🚀 Project Overview
+## Project Overview
 
 This repository provisions the following in AWS:
 
@@ -21,36 +21,34 @@ All resources are defined using Terraform modules and configuration files, allow
 
 ## Repository Structure
 
-00-providers.tf
-01-vpc.tf
-02-int-gateway.tf
-03-public-subnet.tf
-04-private-subnet.tf
-05-public-route-table.tf
-06-publuic-route-table-association.tf
-07-elastic-ip.tf
-08-nat-gateway.tf
-09-private-route-table.tf
-10-private-route-table-association.tf
-11-alb-sg.tf
-12-app-sg.tf
-13-db-sg.tf
-14-ec2.tf
-15-target-groups.tf
-16-target-group-attach.tf
-17-alb.tf
-18-listener.tf
-19-launch-template.tf
-20-auto-scaling-group.tf
-21-db-instance.tf
-21-db-subnet-group.tf
-22-iam role.tf
-variables.tf
-terraform.tfstate*
-images/
+- 00-providers.tf
+- 01-vpc.tf
+- 02-int-gateway.tf
+- 03-public-subnet.tf
+- 04-private-subnet.tf
+- 05-public-route-table.tf
+- 06-publuic-route-table-association.tf
+- 07-elastic-ip.tf
+- 08-nat-gateway.tf
+- 09-private-route-table.tf
+- 10-private-route-table-association.tf
+- 11-alb-sg.tf
+- 12-app-sg.tf
+- 13-db-sg.tf
+- 14-ec2.tf
+- 15-target-groups.tf
+- 16-target-group-attach.tf
+- 17-alb.tf
+- 18-listener.tf
+- 19-launch-template.tf
+- 20-auto-scaling-group.tf
+- 21-db-instance.tf
+- 21-db-subnet-group.tf
+- 22-iam role.tf
+- variables.tf
+- terraform.tfstate*
+- images/
  Each file targets a logical component for clarity and modularity.
-
----
 
 ##  Key Features & Best Practices
 
